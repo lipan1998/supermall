@@ -45,9 +45,11 @@ import FeatureView from "./childComps/FeatureView";
 import BackTop from "@/components/content/backtop/BackTop";
 import { getHomeMultidata, getHomeGoods } from "@/network/home";
 import { debounce } from "@/common/utils";
+import { itemImgListenerMixin } from "@/common/mixin";
 import Scroll from "@/components/common/scroll/Scroll";
 
 export default {
+  Mixins: [itemImgListenerMixin],
   name: "Home",
   components: {
     NavBar,
@@ -76,6 +78,7 @@ export default {
       tabOffsetTop: 0,
       isTabFixed: false,
       saveY: 0,
+      itemImgListener: null,
     };
   },
 
@@ -88,15 +91,14 @@ export default {
     this.getHomeGoods("sell");
   },
   mounted() {
-    const refresh = debounce(this.$refs.scroll.refresh, 50);
-
-    //1.监听item中图片加载完成 最好放在mounted中
-    this.$bus.$on("itemImageLoad", () => {
-      // console.log("----");
-      // this.$refs.scroll.refresh();
-      refresh();
-    });
-    //2.获取tabControl中的offsetTop  在mounted中获取是不对的 图片被加载之后的页面高度是不能够被获取到的
+    // const refresh = debounce(this.$refs.scroll.refresh, 100);
+    // //1.监听item中图片加载完成 最好放在mounted中
+    // //对监听的事件进行保存
+    // this.itemImgListener = () => {
+    //   refresh();
+    // };
+    // this.$bus.$on("itemImageLoad", this.itemImgListener);
+    // //2.获取tabControl中的offsetTop  在mounted中获取是不对的 图片被加载之后的页面高度是不能够被获取到的
   },
 
   methods: {
@@ -177,6 +179,8 @@ export default {
   deactivated() {
     // console.log("deactivated");
     this.saveY = this.$refs.scroll.getScrollY();
+    console.log("deactivated");
+    this.$bus.$off("itemImageLoad", this.itemImgListener);
   },
 };
 </script>

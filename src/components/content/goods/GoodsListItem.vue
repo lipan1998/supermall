@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item" @click="itemClick">
-    <img :src="goodsItem.show.img" @load="imageLoad" />
+    <img :src="showImages" @load="imageLoad" />
     <div class="goods-info">
       <p>{{ goodsItem.title }}</p>
       <span class="price">{{ goodsItem.price }}</span>
@@ -23,9 +23,21 @@ export default {
   data() {
     return {};
   },
+  computed: {
+    showImages() {
+      return this.goodsItem.image || this.goodsItem.show.img;
+    },
+  },
   methods: {
     //利用时间总线
     imageLoad() {
+      // 解决组件复用 detail刷新 避免home刷新的问题
+      // 第一种方法
+      // if(this.$route.path.indexOf('/home')){
+      //   this.$bus.$emit("homeItemImageLoad");
+      // }else if(this.$route.path.indexOf('/detail')){
+      //   this.$bus.$emit("detailItemImageLoad")
+      // }
       this.$bus.$emit("itemImageLoad");
     },
     itemClick() {

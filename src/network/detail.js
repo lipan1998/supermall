@@ -7,7 +7,11 @@ export function getDetail(iid) {
         }
     })
 }
-
+export function getRecommend() {
+    return request({
+        url: '/recommend'
+    })
+}
 //封装相关数据的类
 export class Goods {
     constructor(itemInfo, columns, services) {
